@@ -13,6 +13,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.1.2/handlebars.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
+    <script src="/finance_app/js/general.js"></script>
     <!--[if lt IE 9]>
       <script src="<?= SUBPATH; ?>/js/html5shiv.js"></script>
       <script src="<?= SUBPATH; ?>/js/respond.min.js"></script>
@@ -23,7 +24,7 @@
       <div class="container">
         <div class="navbar-header">
           <img src="<?= SUBPATH; ?>/img/uv.png" style="height:50px;width:40px;float:left;">
-          <a class="navbar-brand" href="#">Universidad Veracruzana</a>
+          <a class="navbar-brand" href="index.php">Universidad Veracruzana</a>
         </div>
         <div class="collapse navbar-collapse" style="float:right;background-color:#463265;">
           <ul class="nav navbar-nav" >
@@ -71,7 +72,7 @@
   </div>
   <p style="text-align:right;">
       <span class="alert alert-warning" style="margin:10px; display:inline-block;">
-      CEP = <input type="text" id="cep" class="form-control" disabled="disabled" >
+      CEP = <input type="text" id="cep_total" class="form-control" disabled="disabled" >
       </span>
   </p>
   <script>
@@ -81,7 +82,9 @@
 
     var calculate = function (){
       if(!validate(['unidad', 'pedido', 'mantenimiento'])) return;
-      $('#cep').val( Math.sqrt(( 2 * ($('#unidad').val()*1) * ($('#pedido').val()*1) ) / ($('#mantenimiento').val()*1) ));
+      var tot = Math.sqrt(( 2 * ($('#unidad').val()*1) * ($('#pedido').val()*1) ) / ($('#mantenimiento').val()*1) );
+      //alert(tot);
+      $('#cep_total').val( tot);
     }
     var validate = function (boxes){
         for(var i=0; i< boxes.length; i++){
@@ -95,7 +98,7 @@
         }
         return true;
       }
-  </{{scp}}>
+  </{{s}}>
 </script>
 
 <script id="pr-template" type="text/x-handlebars-template">
@@ -106,52 +109,47 @@
   </ul>
   <div style="text-align:center; width:100%;">
     <span class="alert alert-info" style="margin:10px; display:inline-block;">
-    Punto de Reorden =  <input type="text" class="form-control" id="ppc_cce"  >  
+    Punto de Reorden =  <input type="text" class="form-control" id="dias"  >  
                         <strong>*</strong>
-                        <input type="text" class="form-control" id="epi_cce">
+                        <input type="text" class="form-control" id="unidades">
                         <strong>=</strong>
-                        <input type="text" class="form-control" id="epi_cce">
+                        <input type="text" class="form-control" id="pr_total" disabled="disabled">
     </span>
   </div>
 
   <div style="text-align:center; width:100%;">
     <span class="alert alert-info" style="margin:10px; display:inline-block;">
     Punto de Reorden =  <strong>(</strong>
-                        <input type="text" class="form-control" id="ppc_cce" >  
+                        <input type="text" class="form-control" id="uud" >  
                         <strong>*</strong>
-                        <input type="text" class="form-control" id="epi_cce">
+                        <input type="text" class="form-control" id="de">
                         <strong>)</strong>
                         <strong>+</strong>
-                        <input type="text" class="form-control" id="epi_cce">
+                        <input type="text" class="form-control" id="is" >
                         <strong>=</strong>
-                        <input type="text" class="form-control" id="epi_cce">
+                        <input type="text" class="form-control" id="pris_total" disabled="disabled">
     </span>
   </div>
 
   <script>
-    $('#epi_cce').on('blur', function(){ calculate(); });
-    $('#ppp_cce').on('blur', function(){ calculate(); });
-    $('#ppc_cce').on('blur', function(){ calculate(); });
+    $('#dias').on('blur', function(){ calculate_pr(); });
+    $('#unidades').on('blur', function(){ calculate_pr(); });
 
-    var calculate = function (){
-      if(!validate()) return;
-      $('#total').val(  ($('#epi_cce').val()*1) +
-                        ($('#ppc_cce').val()*1) -
-                        ($('#ppp_cce').val()*1)  )
+    var calculate_pr = function (){
+      if(!validate(['dias','unidades'])) return;
+      $('#pr_total').val(  ($('#dias').val()*1) *
+                        ($('#unidades').val()*1) );
     }
-    var validate = function (){
-      var boxes = ['epi_cce','ppc_cce', 'ppp_cce'];
-      for(var i=0; i< boxes.length; i++){
-        console.log($('#'+boxes[i]).val());
-        if(isNaN($('#'+boxes[i]).val()))
-        {
-          $("#"+boxes[i]).val('0');
-          return false;
-        }
-      }
-      return true;
+
+    $('#uud').on('blur', function(){ calculate_pris(); });
+    $('#de').on('blur', function(){ calculate_pris(); });
+    $('#is').on('blur', function(){ calculate_pris(); });
+
+    var calculate_pris = function (){
+      if(!validate(['uud','de','is'])) return;
+      $('#pris_total').val(  (($('#uud').val()*1) * ($('#de').val()*1)) + ($('#is').val()*1) );
     }
-  </script>
+  </{{s}}>
 </script>
 
 
@@ -168,7 +166,7 @@
             $( this ).removeClass( "active" );
         });
         $(this).addClass('active');
-        var context = { scp : "script"};
+        var context = { s : "script"};
 
       $('.starter-template').html(pretem(context));
     });
