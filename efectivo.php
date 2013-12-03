@@ -1,5 +1,4 @@
-<?php session_start(); ?>
-<?php define("SUBPATH", "/finance_app"); ?>
+<?php require 'finance.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,12 +7,10 @@
     <title>Universidad Veracruzana</title>
     <link rel="stylesheet" href="<?= SUBPATH; ?>/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= SUBPATH; ?>/css/style.css">
-    <link rel="stylesheet" href="<?= SUBPATH; ?>/css/style.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.1.2/handlebars.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
+    <script type="text/javascript" src="<?= SUBPATH; ?>/js/jquery.min.js"></script>
+    <script type="text/javascript" src="<?= SUBPATH; ?>/js/handlebars.min.js"></script>
+    <script type="text/javascript" src="<?= SUBPATH; ?>/js/mustache.min.js"></script>
+    <script src="/finance_app/js/general.js"></script>
     <!--[if lt IE 9]>
       <script src="<?= SUBPATH; ?>/js/html5shiv.js"></script>
       <script src="<?= SUBPATH; ?>/js/respond.min.js"></script>
@@ -29,7 +26,7 @@
         <div class="collapse navbar-collapse" style="float:right;background-color:#463265;">
           <ul class="nav navbar-nav" >
             <li class="active" style="background-color:#463265;">
-                <a href="<?= SUBPATH; ?>/index.php?destroy=true"  style="background-color:#463265;">Salir</a>
+                <a href="<?= SUBPATH; ?>/index.php?destroy=true" id="exit"  style="background-color:#463265;">Salir</a>
             </li>
           </ul>
         </div>
@@ -49,6 +46,7 @@
         <div class="starter-template">
         </div>
     </div>
+    <a href="index.php" class="btn btn-danger btn-lg" style="display:block;margin:15px auto;width:100px;" > &laquo; Atras </a>
   </body>
 </html>
 
@@ -83,24 +81,13 @@
     $('#ppc_cce').on('blur', function(){ calculate(); });
 
     var calculate = function (){
-      if(!validate()) return;
+      if(!validate( ['epi_cce','ppc_cce', 'ppp_cce'])) return;
       $('#total').val(  ($('#epi_cce').val()*1) +
                         ($('#ppc_cce').val()*1) -
                         ($('#ppp_cce').val()*1)  )
     }
-    var validate = function (){
-      var boxes = ['epi_cce','ppc_cce', 'ppp_cce'];
-      for(var i=0; i< boxes.length; i++){
-        console.log($('#'+boxes[i]).val());
-        if(isNaN($('#'+boxes[i]).val()))
-        {
-          $("#"+boxes[i]).val('0');
-          return false;
-        }
-      }
-      return true;
-    }
-  </script>
+    
+  </{{s}}>
 </script>
 
 <script id="co-template" type="text/x-handlebars-template">
@@ -132,23 +119,11 @@
     $('#ppc_co').on('blur', function(){ calculate(); });
 
     var calculate = function (){
-      if(!validate()) return;
+      if(!validate(['epi_co','ppc_co'])) return;
       $('#total').val(  ($('#epi_co').val()*1) +
                         ($('#ppc_co').val()*1))
     }
-    var validate = function (){
-      var boxes = ['epi_co','ppc_co'];
-      for(var i=0; i< boxes.length; i++){
-        console.log($('#'+boxes[i]).val());
-        if(isNaN($('#'+boxes[i]).val()))
-        {
-          $("#"+boxes[i]).val('0');
-          return false;
-        }
-      }
-      return true;
-    }
-  </script>
+  </{{s}}>
 </script>
 
 <script id="epi-template" type="text/x-handlebars-template">
@@ -232,20 +207,7 @@
           $('#total_epi').val(  360 / ($('#ri').val()*1) ) ;
 
       }
-
-      var validate = function (boxes){
-        for(var i=0; i< boxes.length; i++){
-            if(isNaN($('#'+boxes[i]).val()))
-            {
-                $("#"+boxes[i]).val('0');
-                return false;
-            }else if($("#"+boxes[i]).val() == ''){
-                 return false;
-            }
-        }
-        return true;
-      }
-    </script>
+    </{{s}}>
 </script>
 
 <script id="mb-template" type="text/x-handlebars-template"></script>
@@ -255,7 +217,7 @@
         return Handlebars.compile($('#'+name +"-template").html());
     };
 
-    $(".nav li").on('click',function(event){
+    $(".nav-pills li").on('click',function(event){
         event.preventDefault();
         var id_template = $(this).attr('id');
         var id_template_r = id_template;
@@ -265,7 +227,7 @@
             $( this ).removeClass( "active" );
         });
         $(this).addClass('active');
-        var context = {};
+        var context = { s: 'script'};
         switch(id_template_r)
         {
             case "epi":
@@ -278,7 +240,8 @@
                                     ],
                         one : "IP",
                         two : "RI",
-                        three : "EPI" 
+                        three : "EPI",
+                        s : "script" 
                         };
             break;
 
@@ -292,7 +255,8 @@
                                     ],
                             one : "PCxC",
                             two : "RCxC",
-                            three : "PPC" 
+                            three : "PPC",
+                            s : "script"
                             };
                 break;
             case  "ppp":
@@ -305,7 +269,8 @@
                                     ],
                             one : "PCxP",
                             two : "RCxP",
-                            three : "PPP" 
+                            three : "PPP" ,
+                            s : "script"
                         };
                 break;
         default:

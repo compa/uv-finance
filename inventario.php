@@ -1,5 +1,4 @@
-<?php session_start(); ?>
-<?php define("SUBPATH", "/finance_app"); ?>
+<?php require 'finance.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,12 +7,10 @@
     <title>Universidad Veracruzana</title>
     <link rel="stylesheet" href="<?= SUBPATH; ?>/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= SUBPATH; ?>/css/style.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.1.2/handlebars.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
-    <script src="/finance_app/js/general.js"></script>
+    <script type="text/javascript" src="<?= SUBPATH; ?>/js/jquery.min.js"></script>
+    <script type="text/javascript" src="<?= SUBPATH; ?>/js/handlebars.min.js"></script>
+    <script type="text/javascript" src="<?= SUBPATH; ?>/js/mustache.min.js"></script>
+    <script src="<?= SUBPATH; ?>/js/general.js"></script>
     <!--[if lt IE 9]>
       <script src="<?= SUBPATH; ?>/js/html5shiv.js"></script>
       <script src="<?= SUBPATH; ?>/js/respond.min.js"></script>
@@ -45,12 +42,12 @@
         <div class="starter-template">
         </div>
     </div>
+    <a href="index.php" class="btn btn-danger btn-lg"   style="display:block;margin:15px auto;width:100px;" > &laquo; Atras </a>
   </body>
 </html>
 
 <script id="cep-template" type="text/x-handlebars-template">
   <p class="well"><b> CANTIDAD ECONÓMICA DE PEDIDO : (CEP) </b></p>
- 
   <ul>
     <li><b>CEP</b> = &#8730; (2 * U * P) / M </li>
     <li><b>U</b> = Uso de Unidades por Periodo </li>
@@ -119,7 +116,7 @@
 
   <div style="text-align:center; width:100%;">
     <span class="alert alert-info" style="margin:10px; display:inline-block;">
-    Punto de Reorden =  <strong>(</strong>
+    Punto de Reorden con inventario de Seguridad =  <strong>(</strong>
                         <input type="text" class="form-control" id="uud" >  
                         <strong>*</strong>
                         <input type="text" class="form-control" id="de">
@@ -140,7 +137,6 @@
       $('#pr_total').val(  ($('#dias').val()*1) *
                         ($('#unidades').val()*1) );
     }
-
     $('#uud').on('blur', function(){ calculate_pris(); });
     $('#de').on('blur', function(){ calculate_pris(); });
     $('#is').on('blur', function(){ calculate_pris(); });
@@ -157,8 +153,7 @@
     var template = function(name) {
         return Handlebars.compile($('#'+name +"-template").html());
     };
-
-    $(".nav li").on('click',function(event){
+    $(".nav-pills  li").on('click',function(event){
         event.preventDefault();
         var id_template = $(this).attr('id');
         var pretem = template(id_template);
@@ -167,7 +162,6 @@
         });
         $(this).addClass('active');
         var context = { s : "script"};
-
       $('.starter-template').html(pretem(context));
     });
 </script>
